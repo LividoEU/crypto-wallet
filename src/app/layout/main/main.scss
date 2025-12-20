@@ -1,0 +1,40 @@
+// Main Layout Container
+// This is the primary layout container that holds all layout components.
+// Uses flexbox to distribute space among child components.
+
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+
+  // ============================================
+  // LAYOUT SIZE CONFIGURATION
+  // ============================================
+  // Define the flex-grow values for each layout component.
+  // Components with flex-grow will share available space proportionally.
+  // A component with --layout-dashboard-size: 9 and --layout-footer-size: 1
+  // means dashboard takes 90% and footer takes 10%.
+  //
+  // To add a new component, define its size variable here and use it
+  // in the component's SCSS file.
+  // ============================================
+
+  // Dashboard: Takes all available space by default (flex-grow: 1)
+  // When used with footer (9:1 ratio = 90%:10%)
+  --layout-dashboard-size: 9;
+
+  // Footer: Smaller portion of the layout
+  --layout-footer-size: 1;
+
+  // Header (for future use): Can be configured similarly
+  --layout-header-size: 1;
+
+  // Sidebar (for future use): Fixed or proportional
+  --layout-sidebar-size: 2;
+
+  // Content area (for future use)
+  --layout-content-size: 8;
+}
