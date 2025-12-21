@@ -1,2 +1,2 @@
 export * from './blockchain-api';
-export * from './blockchain-api.types';
+export * from '../../models/blockchain-api.types';

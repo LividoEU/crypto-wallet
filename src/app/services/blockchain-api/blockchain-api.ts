@@ -9,7 +9,7 @@ import {
   BlockchainTickerResponse,
   BlockchainLatestBlock,
   BlockchainMultiAddressResponse,
-} from './blockchain-api.types';
+} from '../../models/blockchain-api.types';
 
 /**
  * Service for interacting with the blockchain.com API.
@@ -36,19 +36,10 @@ export class BlockchainApiService {
    *   console.log('Balance:', info.final_balance);
    * });
    */
-  getAddressInfo(
-    address: string,
-    limit = 50,
-    offset = 0
-  ): Observable<BlockchainAddressInfo> {
-    const params = new HttpParams()
-      .set('limit', limit.toString())
-      .set('offset', offset.toString());
+  getAddressInfo(address: string, limit = 50, offset = 0): Observable<BlockchainAddressInfo> {
+    const params = new HttpParams().set('limit', limit.toString()).set('offset', offset.toString());
 
-    return this.#http.get<BlockchainAddressInfo>(
-      `${this.#baseUrl}/rawaddr/${address}`,
-      { params }
-    );
+    return this.#http.get<BlockchainAddressInfo>(`${this.#baseUrl}/rawaddr/${address}`, { params });
   }
 
   /**
@@ -68,10 +59,7 @@ export class BlockchainApiService {
       .set('n', limit.toString())
       .set('offset', offset.toString());
 
-    return this.#http.get<BlockchainMultiAddressResponse>(
-      `${this.#baseUrl}/multiaddr`,
-      { params }
-    );
+    return this.#http.get<BlockchainMultiAddressResponse>(`${this.#baseUrl}/multiaddr`, { params });
   }
 
   /**
@@ -80,9 +68,7 @@ export class BlockchainApiService {
    * @returns Observable of transaction details
    */
   getTransaction(txHash: string): Observable<BlockchainTransaction> {
-    return this.#http.get<BlockchainTransaction>(
-      `${this.#baseUrl}/rawtx/${txHash}`
-    );
+    return this.#http.get<BlockchainTransaction>(`${this.#baseUrl}/rawtx/${txHash}`);
   }
 
   /**
@@ -91,9 +77,7 @@ export class BlockchainApiService {
    * @returns Observable of block details
    */
   getBlockByHash(blockHash: string): Observable<BlockchainBlock> {
-    return this.#http.get<BlockchainBlock>(
-      `${this.#baseUrl}/rawblock/${blockHash}`
-    );
+    return this.#http.get<BlockchainBlock>(`${this.#baseUrl}/rawblock/${blockHash}`);
   }
 
   /**
@@ -102,10 +86,9 @@ export class BlockchainApiService {
    * @returns Observable of block details
    */
   getBlockByHeight(height: number): Observable<BlockchainBlock> {
-    return this.#http.get<BlockchainBlock>(
-      `${this.#baseUrl}/block-height/${height}`,
-      { params: { format: 'json' } }
-    );
+    return this.#http.get<BlockchainBlock>(`${this.#baseUrl}/block-height/${height}`, {
+      params: { format: 'json' },
+    });
   }
 
   /**
@@ -118,15 +101,11 @@ export class BlockchainApiService {
     address: string,
     confirmations = 0
   ): Observable<BlockchainUnspentOutputsResponse> {
-    const params = new HttpParams().set(
-      'confirmations',
-      confirmations.toString()
-    );
+    const params = new HttpParams().set('confirmations', confirmations.toString());
 
-    return this.#http.get<BlockchainUnspentOutputsResponse>(
-      `${this.#baseUrl}/unspent`,
-      { params: params.set('active', address) }
-    );
+    return this.#http.get<BlockchainUnspentOutputsResponse>(`${this.#baseUrl}/unspent`, {
+      params: params.set('active', address),
+    });
   }
 
   /**
@@ -134,9 +113,7 @@ export class BlockchainApiService {
    * @returns Observable of latest block
    */
   getLatestBlock(): Observable<BlockchainLatestBlock> {
-    return this.#http.get<BlockchainLatestBlock>(
-      `${this.#baseUrl}/latestblock`
-    );
+    return this.#http.get<BlockchainLatestBlock>(`${this.#baseUrl}/latestblock`);
   }
 
   /**
@@ -144,9 +121,7 @@ export class BlockchainApiService {
    * @returns Observable of ticker prices
    */
   getTicker(): Observable<BlockchainTickerResponse> {
-    return this.#http.get<BlockchainTickerResponse>(
-      `${this.#baseUrl}/ticker`
-    );
+    return this.#http.get<BlockchainTickerResponse>(`${this.#baseUrl}/ticker`);
   }
 
   /**
@@ -154,11 +129,12 @@ export class BlockchainApiService {
    * @param address Bitcoin address
    * @returns Observable of balance in satoshis
    */
-  getBalance(address: string): Observable<Record<string, { final_balance: number; n_tx: number; total_received: number }>> {
-    return this.#http.get<Record<string, { final_balance: number; n_tx: number; total_received: number }>>(
-      `${this.#baseUrl}/balance`,
-      { params: { active: address } }
-    );
+  getBalance(
+    address: string
+  ): Observable<Record<string, { final_balance: number; n_tx: number; total_received: number }>> {
+    return this.#http.get<
+      Record<string, { final_balance: number; n_tx: number; total_received: number }>
+    >(`${this.#baseUrl}/balance`, { params: { active: address } });
   }
 
   /**
