@@ -7,12 +7,6 @@
   "newProjectRoot": "projects",
   "projects": {
     "crypto-wallet": {
-      "i18n": {
-        "sourceLocale": "en-US",
-        "locales": {
-          "es-ES": "src/app/assets/i18n/messages.es.json"
-        }
-      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -26,9 +20,6 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "localize": [
-              "es-ES"
-            ],
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -36,13 +27,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
               }
             ],
             "styles": [
               "src/styles.scss"
-            ],
-            "polyfills": [
-              "@angular/localize/init"
             ]
           },
           "configurations": {

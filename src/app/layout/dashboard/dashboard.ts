@@ -1,26 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import {
-  MatBottomSheet,
-  MatBottomSheetModule
-} from '@angular/material/bottom-sheet';
-import { CreateWalletBottomList } from '../../components/create-wallet-bottom-list/create-wallet-bottom-list';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    MatButtonModule, 
-    MatIconModule,
-    MatBottomSheetModule
-  ],
+  imports: [],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard {
-  private _bottomSheet = inject(MatBottomSheet);
-
-  openBottomSheet(): void {
-    this._bottomSheet.open(CreateWalletBottomList);
-  }
-}
+export class Dashboard {}

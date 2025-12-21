@@ -1,0 +1,19 @@
+{
+  "navbar": {
+    "appTitle": "Crypto Wallet",
+    "toggleSidebar": "Toggle sidebar menu",
+    "searchPlaceholder": "Search address or transaction",
+    "searchAriaLabel": "Search for address or transaction",
+    "changeLanguage": "Change language",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "sidebar": {
+    "createBtcWallet": "Create BTC Wallet",
+    "btcMainnet": "Bitcoin mainnet",
+    "createTestWallet": "Create Test Wallet",
+    "btcTestnet": "Bitcoin testnet"
+  }
+}

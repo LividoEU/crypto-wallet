@@ -1,28 +1,8 @@
-// Dashboard Layout Component
-// This component automatically fills all available space in the main layout.
-// When it's the only component, it takes 100%.
-// When combined with other components (e.g., footer), it shares space proportionally.
-
 :host {
   display: flex;
   flex-direction: column;
-  width: 100%;
-
-  // Flex-grow allows this component to expand and fill available space.
-  // When it's the only child, it takes 100%.
-  // When combined with footer, the ratio is determined by the CSS variables.
-  flex-grow: var(--layout-dashboard-size, 1);
-  flex-shrink: 1;
-  flex-basis: 0;
-
-  // Ensure content doesn't overflow
-  overflow: auto;
-
-  // Minimum height to prevent collapsing
+  flex: 1;
   min-height: 0;
-
-  .container {
-    margin: 10px 10px 10px 10px;
-  }
-
+  overflow: auto;
+  background-color: var(--mat-sys-surface);
 }

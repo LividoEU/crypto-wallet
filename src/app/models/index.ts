@@ -17,3 +17,8 @@ export type {
   WalletInfo,
   WalletCreationOptions,
 } from './wallet.types';
+
+// Language types
+export type { Language } from './language.types';
+
+export { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE } from './language.types';

@@ -1,1 +1,20 @@
-<app-dashboard></app-dashboard>
+<app-navbar
+  (menuToggled)="onMenuToggle()"
+  (searchSubmitted)="onSearch($event)"
+></app-navbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    mode="over"
+    position="start"
+    [opened]="sidebarOpen()"
+    (openedChange)="sidebarOpen.set($event)"
+    class="sidenav"
+  >
+    <app-sidebar-content></app-sidebar-content>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="sidenav-content">
+    <app-dashboard></app-dashboard>
+  </mat-sidenav-content>
+</mat-sidenav-container>

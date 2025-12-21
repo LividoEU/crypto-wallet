@@ -1,0 +1,19 @@
+{
+  "navbar": {
+    "appTitle": "Cartera Crypto",
+    "toggleSidebar": "Alternar menú lateral",
+    "searchPlaceholder": "Buscar dirección o transacción",
+    "searchAriaLabel": "Buscar dirección o transacción",
+    "changeLanguage": "Cambiar idioma",
+    "lightMode": "Modo claro",
+    "darkMode": "Modo oscuro",
+    "switchToLight": "Cambiar a modo claro",
+    "switchToDark": "Cambiar a modo oscuro"
+  },
+  "sidebar": {
+    "createBtcWallet": "Crear Cartera BTC",
+    "btcMainnet": "Red principal de Bitcoin",
+    "createTestWallet": "Crear Cartera de Prueba",
+    "btcTestnet": "Red de prueba de Bitcoin"
+  }
+}

@@ -31,6 +31,8 @@
     "@angular/material": "^21.0.5",
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
     "@noble/secp256k1": "^3.0.0",
     "@scure/bip32": "^2.0.1",
     "@scure/bip39": "^2.0.1",
