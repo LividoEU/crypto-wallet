@@ -4,7 +4,9 @@ import {
   computed,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,13 +14,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { TranslateModule } from '@ngx-translate/core';
-import {
-  MnemonicDialog,
-  MnemonicDialogResult,
-} from '../../shared/components/mnemonic-dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { QRCodeComponent } from 'angularx-qrcode';
+import { MnemonicDialog, MnemonicDialogResult } from '../../shared/components/mnemonic-dialog';
 import { WalletSessionService } from '../../services/wallet-session';
-import { WalletTransaction } from '../../interfaces';
+import { DerivedAddress, WalletTransaction } from '../../interfaces';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,16 +32,23 @@ import { WalletTransaction } from '../../interfaces';
     MatIconModule,
     MatProgressSpinnerModule,
     MatExpansionModule,
+    MatMenuModule,
+    MatTooltipModule,
+    MatSnackBarModule,
     TranslateModule,
+    QRCodeComponent,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard implements OnInit {
-  #dialog = inject(MatDialog);
-  #router = inject(Router);
-  #walletSession = inject(WalletSessionService);
+  readonly #dialog = inject(MatDialog);
+  readonly #router = inject(Router);
+  readonly #walletSession = inject(WalletSessionService);
+  readonly #clipboard = inject(Clipboard);
+  readonly #snackBar = inject(MatSnackBar);
+  readonly #translate = inject(TranslateService);
 
   isLoggedIn = this.#walletSession.isLoggedIn;
   isScanning = this.#walletSession.isScanning;
@@ -47,11 +57,31 @@ export class Dashboard implements OnInit {
   transactions = this.#walletSession.transactions;
   usedAddresses = this.#walletSession.usedAddresses;
 
-  balanceBtc = computed(() => this.#walletSession.satoshisToBtc(this.balanceSatoshis()));
-  balanceEur = computed(() => this.#walletSession.satoshisToEur(this.balanceSatoshis()));
+  // balanceBtc = computed(() => this.#walletSession.satoshisToBtc(this.balanceSatoshis()));
+  // balanceEur = computed(() => this.#walletSession.satoshisToEur(this.balanceSatoshis()));
+  // Calculate confirmed balance by excluding pending transactions
+  confirmedBalanceSatoshis = computed(() => {
+    const total = this.balanceSatoshis();
+    const pendingAmount = this.transactions()
+      .filter((tx) => !tx.blockHeight)
+      .reduce((sum, tx) => sum + tx.result, 0);
+    return total - pendingAmount;
+  });
+
+  balanceBtc = computed(() => this.#walletSession.satoshisToBtc(this.confirmedBalanceSatoshis()));
+  balanceEur = computed(() => this.#walletSession.satoshisToEur(this.confirmedBalanceSatoshis()));
+
+  receiveAddress = signal<DerivedAddress | null>(null);
+  qrCodeData = computed(() => {
+    const address = this.receiveAddress();
+    if (!address) return '';
+    return address.address;
+  });
 
   ngOnInit(): void {
-    this.openMnemonicDialog();
+    if (!this.isLoggedIn()) {
+      this.openMnemonicDialog();
+    }
   }
 
   openMnemonicDialog(): void {
@@ -82,14 +112,59 @@ export class Dashboard implements OnInit {
   }
 
   navigateToAddress(address: string): void {
-    console.log('Address data:', {
-      address,
-      isOwn: this.isOwnAddress(address),
-      addressInfo: this.usedAddresses().find((a) => a.address === address),
-    });
+    this.#router.navigate(['/address', address]);
   }
 
   getTransactionType(tx: WalletTransaction): 'sent' | 'received' {
     return tx.result < 0 ? 'sent' : 'received';
+  }
+
+  getTransactionStatus(
+    tx: WalletTransaction
+  ): 'pending-incoming' | 'pending-outgoing' | 'incoming' | 'outgoing' {
+    if (!tx.blockHeight) {
+      return tx.result >= 0 ? 'pending-incoming' : 'pending-outgoing';
+    }
+    return tx.result >= 0 ? 'incoming' : 'outgoing';
+  }
+
+  getStatusIcon(status: 'pending-incoming' | 'pending-outgoing' | 'incoming' | 'outgoing'): string {
+    switch (status) {
+      case 'pending-incoming':
+      case 'pending-outgoing':
+        return 'sync';
+      case 'incoming':
+        return 'south_east';
+      case 'outgoing':
+        return 'north_east';
+    }
+  }
+
+  getPrimaryFromAddress(tx: WalletTransaction): string {
+    const firstInput = tx.inputs.find((i) => i.address);
+    return firstInput?.address ?? '';
+  }
+
+  satoshisToEur(satoshis: number): number | null {
+    return this.#walletSession.satoshisToEur(satoshis);
+  }
+
+  onReceiveMenuOpen(): void {
+    const address = this.#walletSession.getFirstUnusedAddress();
+    this.receiveAddress.set(address);
+  }
+
+  copyAddress(): void {
+    const address = this.receiveAddress()?.address;
+    if (address) {
+      this.#clipboard.copy(address);
+      this.#snackBar.open(this.#translate.instant('dashboard.receive.copied'), undefined, {
+        duration: 2000,
+      });
+    }
+  }
+
+  refreshWallet(): void {
+    this.#walletSession.refreshBalance();
   }
 }

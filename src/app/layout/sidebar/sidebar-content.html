@@ -1,13 +1,13 @@
 <mat-nav-list class="nav-list">
   <a mat-list-item (click)="createBtcWallet()">
-    <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
+    <img src="assets/svg/bitcoin-logo.svg" alt="" matListItemIcon class="btc-icon" />
     <span matListItemTitle>{{ 'sidebar.createBtcWallet' | translate }}</span>
     <span matListItemLine>{{ 'sidebar.btcMainnet' | translate }}</span>
   </a>
 
   @if (isDevMode) {
     <a mat-list-item (click)="createTestWallet()">
-      <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
+      <img src="assets/svg/bitcoin-logo.svg" alt="" matListItemIcon class="btc-icon" />
       <span matListItemTitle>{{ 'sidebar.createTestWallet' | translate }}</span>
       <span matListItemLine>{{ 'sidebar.btcTestnet' | translate }}</span>
     </a>

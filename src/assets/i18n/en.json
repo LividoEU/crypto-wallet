@@ -40,12 +40,18 @@
       "title": "Total Balance",
       "scanning": "Scanning wallet addresses..."
     },
+    "receive": {
+      "tooltip": "Receive BTC",
+      "copy": "Copy address",
+      "copied": "Address copied to clipboard"
+    },
     "transactions": {
       "title": "Transactions",
       "from": "From",
       "to": "To",
       "fee": "Fee",
-      "block": "Block"
+      "block": "Block",
+      "refresh": "Refresh transactions"
     },
     "empty": {
       "notLoggedIn": "Not logged in",
@@ -53,6 +59,20 @@
       "noData": "No transactions yet",
       "noDataDescription": "Your wallet is connected but there are no transactions to display yet.",
       "enterMnemonic": "Enter Mnemonic"
+    }
+  },
+  "addressDetail": {
+    "title": "Address Details",
+    "address": "Address",
+    "ownAddress": "Your Address",
+    "balance": "Balance",
+    "transactions": "Transactions",
+    "noTransactions": "No transactions found for this address",
+    "block": "Block",
+    "status": {
+      "pending": "Pending",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing"
     }
   }
 }

@@ -36,6 +36,7 @@
     "@noble/secp256k1": "^3.0.0",
     "@scure/bip32": "^2.0.1",
     "@scure/bip39": "^2.0.1",
+    "angularx-qrcode": "^21.0.4",
     "bip32": "^5.0.0",
     "bip39": "^3.1.0",
     "bitcoinjs-lib": "^7.0.0",

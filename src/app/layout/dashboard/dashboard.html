@@ -1,116 +1,191 @@
-@if (isLoggedIn()) {
-  @if (isScanning()) {
-    <div class="loading-overlay">
-      <mat-spinner diameter="48"></mat-spinner>
-      <span class="loading-text">{{ 'dashboard.balance.scanning' | translate }}</span>
+@if (isLoggedIn()) { @if (isScanning()) {
+<div class="loading-overlay">
+  <mat-spinner diameter="48"></mat-spinner>
+  <span class="loading-text">{{ 'dashboard.balance.scanning' | translate }}</span>
+</div>
+} @else {
+<div class="dashboard-content">
+  <div class="balance-section">
+    <h2 class="balance-label">{{ 'dashboard.balance.title' | translate }}</h2>
+    <div class="balance-display">
+      <span class="balance-btc">{{ balanceBtc() | number : '1.8-8' }} BTC</span>
+      @if (balanceEur() !== null) {
+      <span class="balance-separator" aria-hidden="true"></span>
+      <span class="balance-eur">{{ balanceEur() | number : '1.2-2' : 'es' }} EUR</span>
+      }
     </div>
-  } @else {
-    <div class="dashboard-content">
-      <div class="balance-section">
-        <h2 class="balance-label">{{ 'dashboard.balance.title' | translate }}</h2>
-        <div class="balance-display">
-          <span class="balance-btc">{{ balanceBtc() | number:'1.8-8' }} BTC</span>
-          @if (balanceEur() !== null) {
-            <span class="balance-eur">{{ balanceEur() | number:'1.2-2' }} EUR</span>
+    <div class="balance-actions">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="receiveMenu"
+        [matTooltip]="'dashboard.receive.tooltip' | translate"
+        (menuOpened)="onReceiveMenuOpen()"
+        class="receive-button"
+        aria-label="Receive BTC"
+      >
+        <mat-icon>qr_code_2</mat-icon>
+      </button>
+      <mat-menu #receiveMenu="matMenu" class="receive-menu">
+        <div class="receive-content" (click)="$event.stopPropagation()">
+          @if (receiveAddress(); as address) {
+          <qrcode
+            [qrdata]="qrCodeData()"
+            [width]="200"
+            [errorCorrectionLevel]="'M'"
+            [margin]="2"
+            class="qr-code"
+          ></qrcode>
+          <div class="receive-address">
+            <span class="address-text">{{ address.address }}</span>
+            <button
+              mat-icon-button
+              (click)="copyAddress()"
+              [matTooltip]="'dashboard.receive.copy' | translate"
+              class="copy-button"
+              aria-label="Copy address"
+            >
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          </div>
           }
         </div>
-      </div>
+      </mat-menu>
+    </div>
+  </div>
 
-      <div class="transactions-section">
-        <h2 class="section-title">{{ 'dashboard.transactions.title' | translate }}</h2>
+  <div class="transactions-section">
+    <div class="section-header">
+      <h2 class="section-title">{{ 'dashboard.transactions.title' | translate }}</h2>
+      <button
+        mat-icon-button
+        (click)="refreshWallet()"
+        [disabled]="isScanning()"
+        [matTooltip]="'dashboard.transactions.refresh' | translate"
+        class="refresh-button"
+        aria-label="Refresh transactions"
+      >
+        <mat-icon [class.spinning]="isScanning()">refresh</mat-icon>
+      </button>
+    </div>
 
-        @if (transactions().length === 0) {
-          <div class="empty-state">
-            <mat-icon class="empty-icon">receipt_long</mat-icon>
-            <h3 class="empty-title">{{ 'dashboard.empty.noData' | translate }}</h3>
-            <p class="empty-description">{{ 'dashboard.empty.noDataDescription' | translate }}</p>
+    @if (transactions().length === 0) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">receipt_long</mat-icon>
+      <h3 class="empty-title">{{ 'dashboard.empty.noData' | translate }}</h3>
+      <p class="empty-description">{{ 'dashboard.empty.noDataDescription' | translate }}</p>
+    </div>
+    } @else {
+    <mat-accordion class="transactions-list">
+      @for (tx of transactions(); track tx.hash) {
+      <mat-expansion-panel class="transaction-panel">
+        <mat-expansion-panel-header>
+          <div class="tx-header">
+            <div class="tx-col tx-col-status">
+              <mat-icon [class]="getTransactionStatus(tx)" class="status-icon">
+                {{ getStatusIcon(getTransactionStatus(tx)) }}
+              </mat-icon>
+            </div>
+            <div class="tx-col tx-col-time">
+              <span class="tx-time">{{ formatDate(tx.time) | date : 'short' }}</span>
+            </div>
+            <div class="tx-col tx-col-address">
+              <div class="tx-address-wrapper">
+                <span class="tx-address-label"
+                  >{{ 'dashboard.transactions.from' | translate }}:</span
+                >
+                <button
+                  class="tx-from-address"
+                  [class.own-address]="isOwnAddress(getPrimaryFromAddress(tx))"
+                  (click)="$event.stopPropagation(); navigateToAddress(getPrimaryFromAddress(tx))"
+                >
+                  {{ getPrimaryFromAddress(tx) }}
+                </button>
+              </div>
+            </div>
+            <div class="tx-col tx-col-amount">
+              <span class="tx-amount" [class]="getTransactionStatus(tx)">
+                {{ tx.result >= 0 ? '+' : '' }}{{ satoshisToBtc(tx.result) | number : '1.8-8' }} BTC
+              </span>
+              <span class="tx-fee-inline">
+                {{ 'dashboard.transactions.fee' | translate }}:
+                {{ satoshisToBtc(tx.fee) | number : '1.8-8' }} BTC @if (satoshisToEur(tx.fee); as
+                feeEur) { ({{ feeEur | number : '1.2-2' : 'es' }} EUR) }
+              </span>
+            </div>
           </div>
-        } @else {
-          <mat-accordion class="transactions-list">
-            @for (tx of transactions(); track tx.hash) {
-              <mat-expansion-panel class="transaction-panel">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <mat-icon [class]="getTransactionType(tx)">
-                      {{ getTransactionType(tx) === 'received' ? 'arrow_downward' : 'arrow_upward' }}
-                    </mat-icon>
-                    <span class="tx-amount" [class]="getTransactionType(tx)">
-                      {{ tx.result >= 0 ? '+' : '' }}{{ satoshisToBtc(tx.result) | number:'1.8-8' }} BTC
-                    </span>
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    {{ formatDate(tx.time) | date:'short' }}
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
+        </mat-expansion-panel-header>
 
-                <div class="tx-details">
-                  <div class="tx-section">
-                    <h4 class="tx-section-title">{{ 'dashboard.transactions.from' | translate }}</h4>
-                    <ul class="address-list">
-                      @for (input of tx.inputs; track $index) {
-                        @if (input.address) {
-                          <li>
-                            <button
-                              class="address-link"
-                              [class.own-address]="isOwnAddress(input.address)"
-                              (click)="navigateToAddress(input.address)"
-                            >
-                              {{ input.address }}
-                            </button>
-                            <span class="address-value">{{ satoshisToBtc(input.value) | number:'1.8-8' }} BTC</span>
-                          </li>
-                        }
-                      }
-                    </ul>
-                  </div>
-
-                  <div class="tx-section">
-                    <h4 class="tx-section-title">{{ 'dashboard.transactions.to' | translate }}</h4>
-                    <ul class="address-list">
-                      @for (output of tx.outputs; track $index) {
-                        @if (output.address) {
-                          <li>
-                            <button
-                              class="address-link"
-                              [class.own-address]="isOwnAddress(output.address)"
-                              (click)="navigateToAddress(output.address)"
-                            >
-                              {{ output.address }}
-                            </button>
-                            <span class="address-value">{{ satoshisToBtc(output.value) | number:'1.8-8' }} BTC</span>
-                          </li>
-                        }
-                      }
-                    </ul>
-                  </div>
-
-                  <div class="tx-meta">
-                    <span class="tx-fee">{{ 'dashboard.transactions.fee' | translate }}: {{ satoshisToBtc(tx.fee) | number:'1.8-8' }} BTC</span>
-                    @if (tx.blockHeight) {
-                      <span class="tx-block">{{ 'dashboard.transactions.block' | translate }}: {{ tx.blockHeight }}</span>
+        <div class="tx-details">
+          <div class="tx-details-grid">
+            <div class="tx-section">
+              <h4 class="tx-section-title">{{ 'dashboard.transactions.from' | translate }}</h4>
+              <ul class="address-list">
+                @for (input of tx.inputs; track $index) { @if (input.address) {
+                <li>
+                  <button
+                    class="address-link"
+                    [class.own-address]="isOwnAddress(input.address)"
+                    (click)="navigateToAddress(input.address)"
+                  >
+                    {{ input.address }}
+                  </button>
+                  <div class="address-amounts">
+                    <span class="address-value"
+                      >{{ satoshisToBtc(input.value) | number : '1.8-8' }} BTC</span
+                    >
+                    @if (satoshisToEur(input.value); as eurValue) {
+                    <span class="address-value-eur"
+                      >{{ eurValue | number : '1.2-2' : 'es' }} EUR</span
+                    >
                     }
                   </div>
-                </div>
-              </mat-expansion-panel>
-            }
-          </mat-accordion>
-        }
-      </div>
-    </div>
-  }
-} @else {
-  <div class="empty-state full-height">
-    <mat-icon class="empty-icon">account_balance_wallet</mat-icon>
-    <h2 class="empty-title">{{ 'dashboard.empty.notLoggedIn' | translate }}</h2>
-    <p class="empty-description">{{ 'dashboard.empty.notLoggedInDescription' | translate }}</p>
-    <button
-      mat-flat-button
-      color="primary"
-      (click)="openMnemonicDialog()"
-      class="mnemonic-button"
-    >
-      <mat-icon>vpn_key</mat-icon>
-      {{ 'dashboard.empty.enterMnemonic' | translate }}
-    </button>
+                </li>
+                } }
+              </ul>
+            </div>
+
+            <div class="tx-section tx-section-to">
+              <h4 class="tx-section-title">{{ 'dashboard.transactions.to' | translate }}</h4>
+              <ul class="address-list">
+                @for (output of tx.outputs; track $index) { @if (output.address) {
+                <li>
+                  <button
+                    class="address-link"
+                    [class.own-address]="isOwnAddress(output.address)"
+                    (click)="navigateToAddress(output.address)"
+                  >
+                    {{ output.address }}
+                  </button>
+                  <div class="address-amounts">
+                    <span class="address-value"
+                      >{{ satoshisToBtc(output.value) | number : '1.8-8' }} BTC</span
+                    >
+                    @if (satoshisToEur(output.value); as eurValue) {
+                    <span class="address-value-eur"
+                      >{{ eurValue | number : '1.2-2' : 'es' }} EUR</span
+                    >
+                    }
+                  </div>
+                </li>
+                } }
+              </ul>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+      }
+    </mat-accordion>
+    }
   </div>
+</div>
+} } @else {
+<div class="empty-state full-height">
+  <mat-icon class="empty-icon">account_balance_wallet</mat-icon>
+  <h2 class="empty-title">{{ 'dashboard.empty.notLoggedIn' | translate }}</h2>
+  <p class="empty-description">{{ 'dashboard.empty.notLoggedInDescription' | translate }}</p>
+  <button mat-flat-button color="primary" (click)="openMnemonicDialog()" class="mnemonic-button">
+    <mat-icon>vpn_key</mat-icon>
+    {{ 'dashboard.empty.enterMnemonic' | translate }}
+  </button>
+</div>
 }

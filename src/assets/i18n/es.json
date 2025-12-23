@@ -40,12 +40,18 @@
       "title": "Saldo Total",
       "scanning": "Escaneando direcciones de la cartera..."
     },
+    "receive": {
+      "tooltip": "Recibir BTC",
+      "copy": "Copiar dirección",
+      "copied": "Dirección copiada al portapapeles"
+    },
     "transactions": {
       "title": "Transacciones",
       "from": "Desde",
       "to": "Hacia",
       "fee": "Comisión",
-      "block": "Bloque"
+      "block": "Bloque",
+      "refresh": "Actualizar transacciones"
     },
     "empty": {
       "notLoggedIn": "No has iniciado sesión",
@@ -53,6 +59,20 @@
       "noData": "Sin transacciones aún",
       "noDataDescription": "Tu cartera está conectada pero aún no hay transacciones para mostrar.",
       "enterMnemonic": "Ingresar frase mnemónica"
+    }
+  },
+  "addressDetail": {
+    "title": "Detalles de Dirección",
+    "address": "Dirección",
+    "ownAddress": "Tu Dirección",
+    "balance": "Saldo",
+    "transactions": "Transacciones",
+    "noTransactions": "No se encontraron transacciones para esta dirección",
+    "block": "Bloque",
+    "status": {
+      "pending": "Pendiente",
+      "incoming": "Entrante",
+      "outgoing": "Saliente"
     }
   }
 }

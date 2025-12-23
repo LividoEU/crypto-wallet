@@ -1,7 +1,8 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { WalletScannerService } from '../wallet-scanner';
 import { BlockchainApiService } from '../blockchain-api';
-import { AddressBalance, WalletScanResult, WalletTransaction } from '../../interfaces';
+import { BitcoinService } from '../bitcoin';
+import { AddressBalance, DerivedAddress, WalletScanResult, WalletTransaction } from '../../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ import { AddressBalance, WalletScanResult, WalletTransaction } from '../../inter
 export class WalletSessionService {
   readonly #walletScanner = inject(WalletScannerService);
   readonly #blockchainApi = inject(BlockchainApiService);
+  readonly #bitcoinService = inject(BitcoinService);
 
   readonly #mnemonic = signal<string | null>(null);
   readonly #isLoggedIn = signal(false);
@@ -18,6 +20,7 @@ export class WalletSessionService {
   readonly #eurPrice = signal<number | null>(null);
   readonly #isScanning = signal(false);
   readonly #scanError = signal<string | null>(null);
+  readonly #highestUsedIndex = signal(-1);
 
   readonly mnemonic = this.#mnemonic.asReadonly();
   readonly isLoggedIn = this.#isLoggedIn.asReadonly();
@@ -27,6 +30,7 @@ export class WalletSessionService {
   readonly eurPrice = this.#eurPrice.asReadonly();
   readonly isScanning = this.#isScanning.asReadonly();
   readonly scanError = this.#scanError.asReadonly();
+  readonly highestUsedIndex = this.#highestUsedIndex.asReadonly();
 
   login(mnemonic: string): void {
     this.#mnemonic.set(mnemonic);
@@ -43,6 +47,7 @@ export class WalletSessionService {
         this.#balanceSatoshis.set(result.totalBalanceSatoshis);
         this.#usedAddresses.set(result.usedAddresses);
         this.#transactions.set(result.transactions);
+        this.#highestUsedIndex.set(result.highestUsedIndex);
         this.#isScanning.set(false);
       },
       error: (err) => {
@@ -62,6 +67,7 @@ export class WalletSessionService {
     this.#eurPrice.set(null);
     this.#isScanning.set(false);
     this.#scanError.set(null);
+    this.#highestUsedIndex.set(-1);
   }
 
   refreshBalance(): void {
@@ -77,6 +83,7 @@ export class WalletSessionService {
         this.#balanceSatoshis.set(result.totalBalanceSatoshis);
         this.#usedAddresses.set(result.usedAddresses);
         this.#transactions.set(result.transactions);
+        this.#highestUsedIndex.set(result.highestUsedIndex);
         this.#isScanning.set(false);
       },
       error: (err) => {
@@ -85,6 +92,19 @@ export class WalletSessionService {
         this.#isScanning.set(false);
       },
     });
+  }
+
+  /**
+   * Get the first unused address from the wallet.
+   * This derives the next address after the highest used index.
+   * @returns The first unused address or null if not logged in
+   */
+  getFirstUnusedAddress(): DerivedAddress | null {
+    const mnemonic = this.#mnemonic();
+    if (!mnemonic) return null;
+
+    const nextIndex = this.#highestUsedIndex() + 1;
+    return this.#bitcoinService.deriveAddressAtIndex(mnemonic, nextIndex, 'mainnet');
   }
 
   #fetchEurPrice(): void {

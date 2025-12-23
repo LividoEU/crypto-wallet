@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { Dashboard } from '../dashboard/dashboard';
 import { Navbar } from '../navbar/navbar';
 import { SidebarContent } from '../sidebar/sidebar-content';
 
 @Component({
   selector: 'app-main',
-  imports: [MatSidenavModule, Dashboard, Navbar, SidebarContent],
+  imports: [RouterOutlet, MatSidenavModule, Navbar, SidebarContent],
   templateUrl: './main.html',
   styleUrl: './main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

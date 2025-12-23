@@ -1,0 +1,39 @@
+<div class="address-detail">
+  <div class="header">
+    <button mat-icon-button (click)="goBack()" aria-label="Go back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="title">{{ 'addressDetail.title' | translate }}</h1>
+  </div>
+
+  <div class="transactions-section">
+    @if (transactions().length === 0) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">receipt_long</mat-icon>
+      <p class="empty-text">{{ 'addressDetail.noTransactions' | translate }}</p>
+    </div>
+    } @else {
+    <mat-list class="transactions-list">
+      @for (tx of transactions(); track tx.hash) {
+      <mat-list-item class="transaction-item">
+        <mat-icon
+          matListItemIcon
+          [class]="getTransactionStatus(tx, address()!)"
+          class="status-icon"
+        >
+          {{ getStatusIcon(getTransactionStatus(tx, address()!)) }}
+        </mat-icon>
+        <div matListItemTitle class="tx-title">
+          <span class="tx-amount" [class]="getTransactionStatus(tx, address()!)">
+            {{ getTransactionStatus(tx, address()!) === 'outgoing' ? '' : '+' }}{{ satoshisToBtc(getTransactionAmount(tx, address()!)) | number : '1.8-8' }} BTC
+          </span>
+        </div>
+        <div matListItemLine class="tx-meta">
+          <span class="tx-date">{{ formatDate(tx.time) | date : 'medium' }}</span>
+        </div>
+      </mat-list-item>
+      }
+    </mat-list>
+    }
+  </div>
+</div>
