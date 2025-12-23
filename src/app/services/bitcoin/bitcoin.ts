@@ -5,7 +5,7 @@ import { wordlist as english } from '@scure/bip39/wordlists/english.js';
 import { HDKey } from '@scure/bip32';
 import { Buffer } from 'buffer';
 
-import { BlockchainService } from '../../interfaces';
+import { BlockchainService, DerivedAddress } from '../../interfaces';
 import { BitcoinWalletInfo, BlockchainNetworks, WalletCreationOptions } from '../../models';
 
 type BitcoinNetwork = BlockchainNetworks['bitcoin'];
@@ -60,6 +60,68 @@ export class BitcoinService implements BlockchainService<BitcoinNetwork, Bitcoin
       addressType: 'p2wpkh',
       createdAt: new Date(),
     };
+  }
+
+  /**
+   * Derive an address at a specific index from a mnemonic.
+   * Uses BIP84 derivation path for native segwit addresses.
+   * @param mnemonic The mnemonic phrase
+   * @param index The address index
+   * @param network The Bitcoin network (mainnet or testnet)
+   * @returns The derived address information
+   */
+  deriveAddressAtIndex(
+    mnemonic: string,
+    index: number,
+    network: BitcoinNetwork = 'mainnet'
+  ): DerivedAddress {
+    const btcNetwork = network === 'mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+    const coinType = network === 'mainnet' ? 0 : 1;
+    const derivationPath = `m/84'/${coinType}'/0'/0/${index}`;
+
+    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    const root = HDKey.fromMasterSeed(seed);
+    const child = root.derive(derivationPath);
+
+    if (!child.publicKey) {
+      throw new Error('Key derivation failed');
+    }
+
+    const { address } = bitcoin.payments.p2wpkh({
+      pubkey: Buffer.from(child.publicKey),
+      network: btcNetwork,
+    });
+
+    if (!address) {
+      throw new Error('Address generation failed');
+    }
+
+    return {
+      address,
+      derivationPath,
+      index,
+    };
+  }
+
+  /**
+   * Derive multiple addresses from a mnemonic.
+   * @param mnemonic The mnemonic phrase
+   * @param startIndex The starting index
+   * @param count The number of addresses to derive
+   * @param network The Bitcoin network
+   * @returns Array of derived addresses
+   */
+  deriveAddresses(
+    mnemonic: string,
+    startIndex: number,
+    count: number,
+    network: BitcoinNetwork = 'mainnet'
+  ): DerivedAddress[] {
+    const addresses: DerivedAddress[] = [];
+    for (let i = 0; i < count; i++) {
+      addresses.push(this.deriveAddressAtIndex(mnemonic, startIndex + i, network));
+    }
+    return addresses;
   }
 
   validateAddress(address: string, network?: BitcoinNetwork): boolean {

@@ -1,50 +1,52 @@
 <mat-toolbar class="navbar" role="banner">
-  <button
-    mat-icon-button
-    (click)="onMenuClick()"
-    [attr.aria-label]="'navbar.toggleSidebar' | translate"
-    class="menu-button"
-  >
-    <mat-icon>menu</mat-icon>
-  </button>
+  <div class="navbar-left">
+    <button
+      mat-icon-button
+      (click)="onMenuClick()"
+      [attr.aria-label]="'navbar.toggleSidebar' | translate"
+      class="menu-button"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
 
-  <div class="brand">
-    <span class="app-title">{{ 'navbar.appTitle' | translate }}</span>
+    <div class="brand">
+      <span class="app-title">{{ 'navbar.appTitle' | translate }}</span>
+    </div>
   </div>
 
-  <form class="search-form" (ngSubmit)="onSearch()" role="search">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-icon matPrefix>search</mat-icon>
-      <input
-        matInput
-        type="search"
-        [placeholder]="'navbar.searchPlaceholder' | translate"
-        [value]="searchQuery()"
-        (input)="onSearchInput($event)"
-        [attr.aria-label]="'navbar.searchAriaLabel' | translate"
-      />
-    </mat-form-field>
-  </form>
+  <div class="navbar-right">
+    <button
+      mat-icon-button
+      (click)="toggleTheme()"
+      [attr.aria-label]="(isDarkMode() ? 'navbar.switchToLight' : 'navbar.switchToDark') | translate"
+      [matTooltip]="(isDarkMode() ? 'navbar.lightMode' : 'navbar.darkMode') | translate"
+      class="theme-toggle"
+    >
+      <mat-icon>{{ isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
 
-  <button
-    mat-icon-button
-    (click)="toggleTheme()"
-    [attr.aria-label]="themeToggleAriaLabel()"
-    [matTooltip]="themeToggleTooltip()"
-    class="theme-toggle"
-  >
-    <mat-icon>{{ isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
-  </button>
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="languageMenu"
+      [matTooltip]="'navbar.changeLanguage' | translate"
+      class="language-toggle"
+      [attr.aria-label]="'navbar.changeLanguage' | translate"
+    >
+      <span class="language-icon">{{ currentLanguage().icon }}</span>
+    </button>
 
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="languageMenu"
-    [matTooltip]="'navbar.changeLanguage' | translate"
-    class="language-toggle"
-    [attr.aria-label]="'navbar.changeLanguage' | translate"
-  >
-    <span class="language-icon">{{ currentLanguage().icon }}</span>
-  </button>
+    @if (isLoggedIn()) {
+      <button
+        mat-icon-button
+        (click)="logout()"
+        [matTooltip]="'navbar.logout' | translate"
+        [attr.aria-label]="'navbar.logout' | translate"
+        class="logout-button"
+      >
+        <mat-icon>logout</mat-icon>
+      </button>
+    }
+  </div>
 
   <mat-menu #languageMenu="matMenu">
     @for (language of availableLanguages; track language.code) {

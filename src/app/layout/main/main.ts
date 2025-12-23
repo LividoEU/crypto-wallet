@@ -17,8 +17,4 @@ export class Main {
   onMenuToggle(): void {
     this.sidebarOpen.update((open) => !open);
   }
-
-  onSearch(query: string): void {
-    console.log('Search query:', query);
-  }
 }

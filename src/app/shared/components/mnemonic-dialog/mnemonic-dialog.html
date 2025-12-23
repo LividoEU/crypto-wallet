@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>{{ 'dashboard.mnemonic.title' | translate }}</h2>
+
+<mat-dialog-content>
+  <p class="description">{{ 'dashboard.mnemonic.description' | translate }}</p>
+
+  <mat-form-field appearance="outline" class="mnemonic-field">
+    <mat-label>{{ 'dashboard.mnemonic.label' | translate }}</mat-label>
+    <textarea
+      matInput
+      rows="4"
+      [value]="mnemonic()"
+      (input)="onMnemonicInput($event)"
+      [placeholder]="'dashboard.mnemonic.placeholder' | translate"
+      [attr.aria-label]="'dashboard.mnemonic.label' | translate"
+    ></textarea>
+    @if (error()) {
+      <mat-error>{{ error() | translate }}</mat-error>
+    }
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    (click)="onDismiss()"
+    [attr.aria-label]="'dashboard.mnemonic.dismiss' | translate"
+  >
+    {{ 'dashboard.mnemonic.dismiss' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onContinue()"
+    [attr.aria-label]="'dashboard.mnemonic.continue' | translate"
+  >
+    {{ 'dashboard.mnemonic.continue' | translate }}
+  </button>
+</mat-dialog-actions>

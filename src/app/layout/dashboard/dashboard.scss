@@ -6,3 +6,243 @@
   overflow: auto;
   background-color: var(--mat-sys-surface);
 }
+
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+}
+
+.loading-text {
+  font-size: 1rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px;
+  gap: 24px;
+}
+
+.balance-section {
+  background-color: var(--mat-sys-surface-container);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.balance-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.balance-display {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.balance-btc {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  font-variant-numeric: tabular-nums;
+}
+
+.balance-eur {
+  font-size: 1rem;
+  color: var(--mat-sys-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.transactions-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  margin: 0 0 16px;
+}
+
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.transaction-panel {
+  mat-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    mat-icon {
+      &.received {
+        color: var(--mat-sys-primary);
+      }
+
+      &.sent {
+        color: var(--mat-sys-error);
+      }
+    }
+  }
+
+  .tx-amount {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+
+    &.received {
+      color: var(--mat-sys-primary);
+    }
+
+    &.sent {
+      color: var(--mat-sys-error);
+    }
+  }
+}
+
+.tx-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.tx-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-section-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.address-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+.address-link {
+  font-family: monospace;
+  font-size: 0.8125rem;
+  color: var(--mat-sys-primary);
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  text-align: left;
+  word-break: break-all;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &.own-address {
+    color: var(--mat-sys-tertiary);
+    font-weight: 500;
+  }
+}
+
+.address-value {
+  font-size: 0.8125rem;
+  color: var(--mat-sys-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tx-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+  padding-top: 8px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+
+  &.full-height {
+    flex: 1;
+  }
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: var(--mat-sys-outline);
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  margin: 0 0 8px;
+}
+
+.empty-description {
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 24px;
+  max-width: 400px;
+}
+
+.mnemonic-button {
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+.full-height {
+  .empty-icon {
+    font-size: 80px;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+  }
+
+  .empty-title {
+    font-size: 1.5rem;
+  }
+
+  .empty-description {
+    font-size: 1rem;
+  }
+}

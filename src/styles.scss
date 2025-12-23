@@ -32,8 +32,8 @@ body {
     (
       color: (
         theme-type: dark,
-        primary: mat.$magenta-palette,
-        tertiary: mat.$violet-palette,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
       ),
     )
   );
@@ -42,8 +42,8 @@ body {
     @include mat.theme(
       (
         color: (
-          primary: mat.$magenta-palette,
-          tertiary: mat.$violet-palette,
+          primary: mat.$azure-palette,
+          tertiary: mat.$blue-palette,
         ),
       )
     );

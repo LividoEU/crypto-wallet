@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ 'walletCreation.title' | translate }}</h2>
+
+<mat-dialog-content>
+  <div class="warning-banner">
+    <mat-icon class="warning-icon">warning</mat-icon>
+    <p class="warning-text">{{ 'walletCreation.warning' | translate }}</p>
+  </div>
+
+  <div class="mnemonic-section">
+    <h3 class="mnemonic-label">{{ 'walletCreation.mnemonicLabel' | translate }}</h3>
+    <div class="mnemonic-box">
+      <p class="mnemonic-words">{{ mnemonic() }}</p>
+      <button
+        mat-icon-button
+        (click)="copyMnemonic()"
+        [attr.aria-label]="'walletCreation.copy' | translate"
+        class="copy-button"
+      >
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="checkbox-section">
+    <mat-checkbox
+      [checked]="hasCopied()"
+      (change)="onCheckboxChange($event.checked)"
+      color="primary"
+    >
+      {{ 'walletCreation.confirmCopied' | translate }}
+    </mat-checkbox>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    (click)="onClose()"
+    [attr.aria-label]="'walletCreation.close' | translate"
+  >
+    {{ 'walletCreation.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="!hasCopied()"
+    (click)="onLogin()"
+    [attr.aria-label]="'walletCreation.loginWithWallet' | translate"
+  >
+    {{ 'walletCreation.loginWithWallet' | translate }}
+  </button>
+</mat-dialog-actions>

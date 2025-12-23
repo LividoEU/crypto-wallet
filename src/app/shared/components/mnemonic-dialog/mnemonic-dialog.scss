@@ -1,0 +1,13 @@
+.description {
+  margin-bottom: 16px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.mnemonic-field {
+  width: 100%;
+
+  textarea {
+    font-family: monospace;
+    resize: none;
+  }
+}

@@ -1,19 +1,58 @@
 {
   "navbar": {
-    "appTitle": "Cartera Crypto",
+    "appTitle": "Cartera crypto",
     "toggleSidebar": "Alternar menú lateral",
-    "searchPlaceholder": "Buscar dirección o transacción",
-    "searchAriaLabel": "Buscar dirección o transacción",
     "changeLanguage": "Cambiar idioma",
     "lightMode": "Modo claro",
     "darkMode": "Modo oscuro",
     "switchToLight": "Cambiar a modo claro",
-    "switchToDark": "Cambiar a modo oscuro"
+    "switchToDark": "Cambiar a modo oscuro",
+    "logout": "Cerrar sesión"
   },
   "sidebar": {
-    "createBtcWallet": "Crear Cartera BTC",
+    "createBtcWallet": "Crear cartera BTC",
     "btcMainnet": "Red principal de Bitcoin",
-    "createTestWallet": "Crear Cartera de Prueba",
+    "createTestWallet": "Crear cartera de Prueba",
     "btcTestnet": "Red de prueba de Bitcoin"
+  },
+  "walletCreation": {
+    "title": "Nueva Cartera BTC Creada",
+    "warning": "Importante: Escribe esta frase mnemónica y guárdala en un lugar seguro. Esta es la única forma de recuperar tu cartera. Los datos no se persisten y se perderán si cierras este diálogo sin anotarlos.",
+    "mnemonicLabel": "Tu Frase Mnemónica",
+    "copy": "Copiar frase",
+    "copied": "Frase copiada al portapapeles",
+    "confirmCopied": "He copiado o anotado mi frase mnemónica",
+    "loginWithWallet": "Iniciar sesión con esta cartera",
+    "close": "Cerrar"
+  },
+  "dashboard": {
+    "mnemonic": {
+      "title": "Ingresa tu frase mnemónica BTC",
+      "description": "Ingresa tu frase mnemónica de 12 o 24 palabras para acceder a tu cartera.",
+      "label": "Frase mnemónica",
+      "placeholder": "Ingresa las palabras de tu frase separadas por espacios...",
+      "continue": "Continuar",
+      "dismiss": "Descartar",
+      "errorEmpty": "Por favor ingresa una frase mnemónica",
+      "errorInvalid": "Frase mnemónica inválida. Por favor verifica tus palabras e intenta de nuevo."
+    },
+    "balance": {
+      "title": "Saldo Total",
+      "scanning": "Escaneando direcciones de la cartera..."
+    },
+    "transactions": {
+      "title": "Transacciones",
+      "from": "Desde",
+      "to": "Hacia",
+      "fee": "Comisión",
+      "block": "Bloque"
+    },
+    "empty": {
+      "notLoggedIn": "No has iniciado sesión",
+      "notLoggedInDescription": "Ingresa tu frase mnemónica para acceder a tu cartera y ver tus transacciones.",
+      "noData": "Sin transacciones aún",
+      "noDataDescription": "Tu cartera está conectada pero aún no hay transacciones para mostrar.",
+      "enterMnemonic": "Ingresar frase mnemónica"
+    }
   }
 }

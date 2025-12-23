@@ -5,9 +5,11 @@
     <span matListItemLine>{{ 'sidebar.btcMainnet' | translate }}</span>
   </a>
 
-  <a mat-list-item (click)="createTestWallet()">
-    <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
-    <span matListItemTitle>{{ 'sidebar.createTestWallet' | translate }}</span>
-    <span matListItemLine>{{ 'sidebar.btcTestnet' | translate }}</span>
-  </a>
+  @if (isDevMode) {
+    <a mat-list-item (click)="createTestWallet()">
+      <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
+      <span matListItemTitle>{{ 'sidebar.createTestWallet' | translate }}</span>
+      <span matListItemLine>{{ 'sidebar.btcTestnet' | translate }}</span>
+    </a>
+  }
 </mat-nav-list>

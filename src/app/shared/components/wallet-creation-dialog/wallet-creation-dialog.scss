@@ -1,0 +1,61 @@
+.warning-banner {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--mat-sys-error-container);
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.warning-icon {
+  color: var(--mat-sys-error);
+  flex-shrink: 0;
+}
+
+.warning-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-error-container);
+  line-height: 1.5;
+}
+
+.mnemonic-section {
+  margin-bottom: 24px;
+}
+
+.mnemonic-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 8px;
+}
+
+.mnemonic-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: 8px;
+  border: 1px solid var(--mat-sys-outline-variant);
+}
+
+.mnemonic-words {
+  flex: 1;
+  margin: 0;
+  font-family: monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  word-spacing: 8px;
+  color: var(--mat-sys-on-surface);
+  user-select: all;
+}
+
+.copy-button {
+  flex-shrink: 0;
+  color: var(--mat-sys-primary);
+}
+
+.checkbox-section {
+  margin-bottom: 8px;
+}

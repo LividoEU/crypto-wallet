@@ -1,6 +1,5 @@
 import { effect, Injectable, signal } from '@angular/core';
-
-export type ThemeMode = 'light' | 'dark';
+import { ThemeMode } from '../../interfaces';
 
 const THEME_STORAGE_KEY = 'crypto-wallet-theme';
 
@@ -55,7 +54,7 @@ export class ThemeService {
       }
     }
 
-    return 'dark';
+    return 'light';
   }
 
   /**

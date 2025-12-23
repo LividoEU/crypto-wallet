@@ -2,18 +2,57 @@
   "navbar": {
     "appTitle": "Crypto Wallet",
     "toggleSidebar": "Toggle sidebar menu",
-    "searchPlaceholder": "Search address or transaction",
-    "searchAriaLabel": "Search for address or transaction",
     "changeLanguage": "Change language",
     "lightMode": "Light mode",
     "darkMode": "Dark mode",
     "switchToLight": "Switch to light mode",
-    "switchToDark": "Switch to dark mode"
+    "switchToDark": "Switch to dark mode",
+    "logout": "Close session"
   },
   "sidebar": {
-    "createBtcWallet": "Create BTC Wallet",
+    "createBtcWallet": "Create BTC wallet",
     "btcMainnet": "Bitcoin mainnet",
-    "createTestWallet": "Create Test Wallet",
+    "createTestWallet": "Create test wallet",
     "btcTestnet": "Bitcoin testnet"
+  },
+  "walletCreation": {
+    "title": "New BTC Wallet Created",
+    "warning": "Important: Write down this mnemonic phrase and store it in a safe place. This is the only way to recover your wallet. The data is not persisted and will be lost if you close this dialog without noting it down.",
+    "mnemonicLabel": "Your Mnemonic Phrase",
+    "copy": "Copy mnemonic",
+    "copied": "Mnemonic copied to clipboard",
+    "confirmCopied": "I have copied or written down my mnemonic phrase",
+    "loginWithWallet": "Login with this wallet",
+    "close": "Close"
+  },
+  "dashboard": {
+    "mnemonic": {
+      "title": "Enter Your BTC Mnemonic",
+      "description": "Enter your 12 or 24 word mnemonic phrase to access your wallet.",
+      "label": "Mnemonic phrase",
+      "placeholder": "Enter your mnemonic words separated by spaces...",
+      "continue": "Continue",
+      "dismiss": "Dismiss",
+      "errorEmpty": "Please enter a mnemonic phrase",
+      "errorInvalid": "Invalid mnemonic phrase. Please check your words and try again."
+    },
+    "balance": {
+      "title": "Total Balance",
+      "scanning": "Scanning wallet addresses..."
+    },
+    "transactions": {
+      "title": "Transactions",
+      "from": "From",
+      "to": "To",
+      "fee": "Fee",
+      "block": "Block"
+    },
+    "empty": {
+      "notLoggedIn": "Not logged in",
+      "notLoggedInDescription": "Enter your mnemonic phrase to access your wallet and view your transactions.",
+      "noData": "No transactions yet",
+      "noDataDescription": "Your wallet is connected but there are no transactions to display yet.",
+      "enterMnemonic": "Enter Mnemonic"
+    }
   }
 }
