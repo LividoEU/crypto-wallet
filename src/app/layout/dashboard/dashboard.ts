@@ -145,6 +145,37 @@ export class Dashboard implements OnInit {
     return firstInput?.address ?? '';
   }
 
+  getFromAddressSummary(tx: WalletTransaction): { address: string; count: number } {
+    const addresses = tx.inputs.filter((i) => i.address).map((i) => i.address!);
+    const uniqueAddresses = [...new Set(addresses)];
+    return {
+      address: uniqueAddresses[0] ?? '',
+      count: uniqueAddresses.length,
+    };
+  }
+
+  getToAddressSummary(tx: WalletTransaction): { address: string; count: number } {
+    const addresses = tx.outputs.filter((o) => o.address).map((o) => o.address!);
+    const uniqueAddresses = [...new Set(addresses)];
+    return {
+      address: uniqueAddresses[0] ?? '',
+      count: uniqueAddresses.length,
+    };
+  }
+
+  getTruncatedTxHash(hash: string): string {
+    if (hash.length <= 16) return hash;
+    return `${hash.slice(0, 8)}...${hash.slice(-8)}`;
+  }
+
+  copyToClipboard(text: string, event?: Event): void {
+    event?.stopPropagation();
+    this.#clipboard.copy(text);
+    this.#snackBar.open(this.#translate.instant('dashboard.receive.copied'), undefined, {
+      duration: 2000,
+    });
+  }
+
   satoshisToEur(satoshis: number): number | null {
     return this.#walletSession.satoshisToEur(satoshis);
   }

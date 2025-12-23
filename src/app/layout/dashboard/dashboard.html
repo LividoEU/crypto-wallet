@@ -85,21 +85,71 @@
                 {{ getStatusIcon(getTransactionStatus(tx)) }}
               </mat-icon>
             </div>
-            <div class="tx-col tx-col-time">
+            <div class="tx-col tx-col-txid">
+              <div class="tx-id-wrapper">
+                <span class="tx-hash" [matTooltip]="tx.hash">{{ getTruncatedTxHash(tx.hash) }}</span>
+                <button
+                  mat-icon-button
+                  class="copy-btn-small"
+                  (click)="copyToClipboard(tx.hash, $event)"
+                  [matTooltip]="'dashboard.receive.copy' | translate"
+                  aria-label="Copy transaction ID"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
               <span class="tx-time">{{ formatDate(tx.time) | date : 'short' }}</span>
             </div>
-            <div class="tx-col tx-col-address">
-              <div class="tx-address-wrapper">
-                <span class="tx-address-label"
-                  >{{ 'dashboard.transactions.from' | translate }}:</span
-                >
-                <button
-                  class="tx-from-address"
-                  [class.own-address]="isOwnAddress(getPrimaryFromAddress(tx))"
-                  (click)="$event.stopPropagation(); navigateToAddress(getPrimaryFromAddress(tx))"
-                >
-                  {{ getPrimaryFromAddress(tx) }}
-                </button>
+            <div class="tx-col tx-col-addresses">
+              <div class="tx-address-row">
+                <span class="tx-address-label">{{ 'dashboard.transactions.from' | translate }}:</span>
+                @if (getFromAddressSummary(tx); as fromSummary) {
+                  @if (fromSummary.count > 1) {
+                    <span class="tx-address-multi">{{ fromSummary.count }} {{ 'dashboard.transactions.inputs' | translate }}</span>
+                  } @else {
+                    <button
+                      class="tx-address-link"
+                      [class.own-address]="isOwnAddress(fromSummary.address)"
+                      (click)="$event.stopPropagation(); navigateToAddress(fromSummary.address)"
+                    >
+                      {{ fromSummary.address }}
+                    </button>
+                    <button
+                      mat-icon-button
+                      class="copy-btn-small"
+                      (click)="copyToClipboard(fromSummary.address, $event)"
+                      [matTooltip]="'dashboard.receive.copy' | translate"
+                      aria-label="Copy address"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  }
+                }
+              </div>
+              <div class="tx-address-row">
+                <span class="tx-address-label">{{ 'dashboard.transactions.to' | translate }}:</span>
+                @if (getToAddressSummary(tx); as toSummary) {
+                  @if (toSummary.count > 1) {
+                    <span class="tx-address-multi">{{ toSummary.count }} {{ 'dashboard.transactions.outputs' | translate }}</span>
+                  } @else {
+                    <button
+                      class="tx-address-link"
+                      [class.own-address]="isOwnAddress(toSummary.address)"
+                      (click)="$event.stopPropagation(); navigateToAddress(toSummary.address)"
+                    >
+                      {{ toSummary.address }}
+                    </button>
+                    <button
+                      mat-icon-button
+                      class="copy-btn-small"
+                      (click)="copyToClipboard(toSummary.address, $event)"
+                      [matTooltip]="'dashboard.receive.copy' | translate"
+                      aria-label="Copy address"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  }
+                }
               </div>
             </div>
             <div class="tx-col tx-col-amount">
@@ -122,13 +172,24 @@
               <ul class="address-list">
                 @for (input of tx.inputs; track $index) { @if (input.address) {
                 <li>
-                  <button
-                    class="address-link"
-                    [class.own-address]="isOwnAddress(input.address)"
-                    (click)="navigateToAddress(input.address)"
-                  >
-                    {{ input.address }}
-                  </button>
+                  <div class="address-with-copy">
+                    <button
+                      class="address-link"
+                      [class.own-address]="isOwnAddress(input.address)"
+                      (click)="navigateToAddress(input.address)"
+                    >
+                      {{ input.address }}
+                    </button>
+                    <button
+                      mat-icon-button
+                      class="copy-btn-small"
+                      (click)="copyToClipboard(input.address)"
+                      [matTooltip]="'dashboard.receive.copy' | translate"
+                      aria-label="Copy address"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  </div>
                   <div class="address-amounts">
                     <span class="address-value"
                       >{{ satoshisToBtc(input.value) | number : '1.8-8' }} BTC</span
@@ -149,13 +210,24 @@
               <ul class="address-list">
                 @for (output of tx.outputs; track $index) { @if (output.address) {
                 <li>
-                  <button
-                    class="address-link"
-                    [class.own-address]="isOwnAddress(output.address)"
-                    (click)="navigateToAddress(output.address)"
-                  >
-                    {{ output.address }}
-                  </button>
+                  <div class="address-with-copy">
+                    <button
+                      class="address-link"
+                      [class.own-address]="isOwnAddress(output.address)"
+                      (click)="navigateToAddress(output.address)"
+                    >
+                      {{ output.address }}
+                    </button>
+                    <button
+                      mat-icon-button
+                      class="copy-btn-small"
+                      (click)="copyToClipboard(output.address)"
+                      [matTooltip]="'dashboard.receive.copy' | translate"
+                      aria-label="Copy address"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  </div>
                   <div class="address-amounts">
                     <span class="address-value"
                       >{{ satoshisToBtc(output.value) | number : '1.8-8' }} BTC</span

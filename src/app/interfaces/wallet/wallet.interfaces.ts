@@ -1,10 +1,29 @@
 /**
+ * Address type for BIP84 HD wallet branches.
+ */
+export type AddressBranch = 'receive' | 'change';
+
+/**
  * Represents a derived address from an HD wallet.
  */
 export interface DerivedAddress {
   address: string;
   derivationPath: string;
   index: number;
+  branch: AddressBranch;
+}
+
+/**
+ * Unspent Transaction Output (UTXO) for spending.
+ */
+export interface UTXO {
+  txHash: string;
+  outputIndex: number;
+  value: number;
+  scriptPubKey: string;
+  address: string;
+  derivationPath: string;
+  confirmations: number;
 }
 
 /**
@@ -14,6 +33,7 @@ export interface AddressBalance {
   address: string;
   derivationPath: string;
   index: number;
+  branch: AddressBranch;
   balanceSatoshis: number;
   transactionCount: number;
 }
@@ -37,8 +57,10 @@ export interface WalletTransaction {
 export interface WalletScanResult {
   usedAddresses: AddressBalance[];
   transactions: WalletTransaction[];
+  utxos: UTXO[];
   totalBalanceSatoshis: number;
-  highestUsedIndex: number;
+  highestUsedReceiveIndex: number;
+  highestUsedChangeIndex: number;
 }
 
 /**
@@ -49,7 +71,10 @@ export interface WalletState {
   balanceSatoshis: number;
   usedAddresses: AddressBalance[];
   transactions: WalletTransaction[];
+  utxos: UTXO[];
   eurPrice: number | null;
   isScanning: boolean;
   scanError: string | null;
+  highestUsedReceiveIndex: number;
+  highestUsedChangeIndex: number;
 }

@@ -5,7 +5,7 @@ import { wordlist as english } from '@scure/bip39/wordlists/english.js';
 import { HDKey } from '@scure/bip32';
 import { Buffer } from 'buffer';
 
-import { BlockchainService, DerivedAddress } from '../../interfaces';
+import { AddressBranch, BlockchainService, DerivedAddress } from '../../interfaces';
 import { BitcoinWalletInfo, BlockchainNetworks, WalletCreationOptions } from '../../models';
 
 type BitcoinNetwork = BlockchainNetworks['bitcoin'];
@@ -68,16 +68,19 @@ export class BitcoinService implements BlockchainService<BitcoinNetwork, Bitcoin
    * @param mnemonic The mnemonic phrase
    * @param index The address index
    * @param network The Bitcoin network (mainnet or testnet)
+   * @param branch The address branch (receive = 0, change = 1)
    * @returns The derived address information
    */
   deriveAddressAtIndex(
     mnemonic: string,
     index: number,
-    network: BitcoinNetwork = 'mainnet'
+    network: BitcoinNetwork = 'mainnet',
+    branch: AddressBranch = 'receive'
   ): DerivedAddress {
     const btcNetwork = network === 'mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const coinType = network === 'mainnet' ? 0 : 1;
-    const derivationPath = `m/84'/${coinType}'/0'/0/${index}`;
+    const branchIndex = branch === 'receive' ? 0 : 1;
+    const derivationPath = `m/84'/${coinType}'/0'/${branchIndex}/${index}`;
 
     const seed = bip39.mnemonicToSeedSync(mnemonic);
     const root = HDKey.fromMasterSeed(seed);
@@ -100,6 +103,7 @@ export class BitcoinService implements BlockchainService<BitcoinNetwork, Bitcoin
       address,
       derivationPath,
       index,
+      branch,
     };
   }
 
@@ -109,19 +113,40 @@ export class BitcoinService implements BlockchainService<BitcoinNetwork, Bitcoin
    * @param startIndex The starting index
    * @param count The number of addresses to derive
    * @param network The Bitcoin network
+   * @param branch The address branch (receive = 0, change = 1)
    * @returns Array of derived addresses
    */
   deriveAddresses(
     mnemonic: string,
     startIndex: number,
     count: number,
-    network: BitcoinNetwork = 'mainnet'
+    network: BitcoinNetwork = 'mainnet',
+    branch: AddressBranch = 'receive'
   ): DerivedAddress[] {
     const addresses: DerivedAddress[] = [];
     for (let i = 0; i < count; i++) {
-      addresses.push(this.deriveAddressAtIndex(mnemonic, startIndex + i, network));
+      addresses.push(this.deriveAddressAtIndex(mnemonic, startIndex + i, network, branch));
     }
     return addresses;
+  }
+
+  /**
+   * Get the private key for a specific derivation path.
+   * Used for transaction signing.
+   * @param mnemonic The mnemonic phrase
+   * @param derivationPath The full derivation path
+   * @returns The private key as a Buffer
+   */
+  getPrivateKeyForPath(mnemonic: string, derivationPath: string): Buffer {
+    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    const root = HDKey.fromMasterSeed(seed);
+    const child = root.derive(derivationPath);
+
+    if (!child.privateKey) {
+      throw new Error('Private key derivation failed');
+    }
+
+    return Buffer.from(child.privateKey);
   }
 
   validateAddress(address: string, network?: BitcoinNetwork): boolean {

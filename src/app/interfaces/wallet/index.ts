@@ -1,5 +1,7 @@
 export type {
+  AddressBranch,
   DerivedAddress,
+  UTXO,
   AddressBalance,
   WalletTransaction,
   WalletScanResult,

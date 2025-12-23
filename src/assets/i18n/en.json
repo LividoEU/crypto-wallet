@@ -51,7 +51,9 @@
       "to": "To",
       "fee": "Fee",
       "block": "Block",
-      "refresh": "Refresh transactions"
+      "refresh": "Refresh transactions",
+      "inputs": "Inputs",
+      "outputs": "Outputs"
     },
     "empty": {
       "notLoggedIn": "Not logged in",

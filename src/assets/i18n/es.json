@@ -51,7 +51,9 @@
       "to": "Hacia",
       "fee": "Comisión",
       "block": "Bloque",
-      "refresh": "Actualizar transacciones"
+      "refresh": "Actualizar transacciones",
+      "inputs": "Entradas",
+      "outputs": "Salidas"
     },
     "empty": {
       "notLoggedIn": "No has iniciado sesión",

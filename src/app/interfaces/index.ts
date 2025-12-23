@@ -3,7 +3,9 @@ export { BLOCKCHAIN_SERVICE } from './blockchain.interface';
 
 // Wallet interfaces
 export type {
+  AddressBranch,
   DerivedAddress,
+  UTXO,
   AddressBalance,
   WalletTransaction,
   WalletScanResult,

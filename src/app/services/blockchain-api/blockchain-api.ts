@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   BlockchainAddressInfo,
   BlockchainBlock,
@@ -154,4 +155,52 @@ export class BlockchainApiService {
   btcToSatoshis(btc: number): number {
     return Math.round(btc * 100_000_000);
   }
+
+  /**
+   * Broadcast a signed transaction to the Bitcoin network.
+   * @param rawTxHex The signed transaction in hexadecimal format
+   * @returns Observable with the transaction hash
+   */
+  broadcastTransaction(rawTxHex: string): Observable<string> {
+    return this.#http.post(`${this.#baseUrl}/pushtx`, `tx=${rawTxHex}`, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      responseType: 'text',
+    });
+  }
+
+  /**
+   * Get recommended fee rates from mempool.space API.
+   * Returns fee rates in sat/vB for different priority levels.
+   * @returns Observable with fee rate recommendations
+   */
+  getFeeEstimates(): Observable<FeeEstimates> {
+    return this.#http.get<MempoolFeeEstimates>('https://mempool.space/api/v1/fees/recommended').pipe(
+      map((response) => ({
+        fastestFee: response.fastestFee,
+        halfHourFee: response.halfHourFee,
+        hourFee: response.hourFee,
+        economyFee: response.economyFee,
+        minimumFee: response.minimumFee,
+      }))
+    );
+  }
+}
+
+/**
+ * Fee rate estimates in sat/vB.
+ */
+export interface FeeEstimates {
+  fastestFee: number;
+  halfHourFee: number;
+  hourFee: number;
+  economyFee: number;
+  minimumFee: number;
+}
+
+interface MempoolFeeEstimates {
+  fastestFee: number;
+  halfHourFee: number;
+  hourFee: number;
+  economyFee: number;
+  minimumFee: number;
 }
