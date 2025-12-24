@@ -20,7 +20,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { MnemonicDialog, MnemonicDialogResult } from '../../shared/components/mnemonic-dialog';
+import { SendDialog } from '../../shared/components/send-dialog';
 import { WalletSessionService } from '../../services/wallet-session';
+import { WalletTransactionService } from '../../services/wallet-transaction';
 import { DerivedAddress, WalletTransaction } from '../../interfaces';
 
 @Component({
@@ -197,5 +199,20 @@ export class Dashboard implements OnInit {
 
   refreshWallet(): void {
     this.#walletSession.refreshBalance();
+  }
+
+  openSendDialog(): void {
+    const dialogRef = this.#dialog.open(SendDialog, {
+      width: '520px',
+      disableClose: false,
+      autoFocus: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success) {
+        // Refresh wallet after successful send
+        this.#walletSession.refreshBalance();
+      }
+    });
   }
 }

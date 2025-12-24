@@ -1,4 +1,9 @@
 {
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back"
+  },
   "navbar": {
     "appTitle": "Crypto Wallet",
     "toggleSidebar": "Toggle sidebar menu",
@@ -45,6 +50,9 @@
       "copy": "Copy address",
       "copied": "Address copied to clipboard"
     },
+    "send": {
+      "tooltip": "Send BTC"
+    },
     "transactions": {
       "title": "Transactions",
       "from": "From",
@@ -61,6 +69,64 @@
       "noData": "No transactions yet",
       "noDataDescription": "Your wallet is connected but there are no transactions to display yet.",
       "enterMnemonic": "Enter Mnemonic"
+    }
+  },
+  "send": {
+    "title": "Send Bitcoin",
+    "loadingFees": "Loading fee estimates...",
+    "spendableBalance": "Spendable balance",
+    "address": "Recipient address",
+    "amount": "Amount",
+    "max": "MAX",
+    "feeSpeed": "Transaction speed",
+    "customFeeRate": "Custom fee rate",
+    "estimatedFee": "Estimated fee",
+    "total": "Total (Amount + Fee)",
+    "feeWarning": "Fee is more than 10% of the amount",
+    "continue": "Continue",
+    "fee": {
+      "fastest": "Fastest",
+      "normal": "Normal",
+      "slow": "Slow",
+      "economy": "Economy",
+      "custom": "Custom"
+    },
+    "error": {
+      "addressRequired": "Please enter a recipient address",
+      "amountRequired": "Please enter an amount",
+      "amountTooSmall": "Amount is too small (minimum 546 satoshis)",
+      "invalidaddress": "Invalid Bitcoin address",
+      "insufficientfunds": "Insufficient funds",
+      "amounttoosmall": "Amount is below the dust limit",
+      "amounttoobig": "Amount exceeds available balance",
+      "cannotCreateTransaction": "Could not create transaction"
+    },
+    "confirm": {
+      "title": "Confirm Transaction",
+      "recipient": "Recipient",
+      "amount": "Amount",
+      "fee": "Network fee",
+      "ofAmount": "of amount",
+      "total": "Total",
+      "inputs": "inputs",
+      "outputs": "outputs",
+      "inputsTitle": "Spending from",
+      "outputsTitle": "Sending to",
+      "change": "Change",
+      "dustNotice": "{{amount}} BTC dust added to fee",
+      "irreversible": "This transaction cannot be reversed once sent",
+      "sendNow": "Send Now"
+    },
+    "broadcasting": {
+      "title": "Broadcasting Transaction",
+      "message": "Broadcasting your transaction to the network..."
+    },
+    "result": {
+      "successTitle": "Transaction Sent",
+      "errorTitle": "Transaction Failed",
+      "success": "Your transaction has been broadcast to the network",
+      "error": "Failed to broadcast transaction",
+      "txHash": "Transaction ID"
     }
   },
   "addressDetail": {

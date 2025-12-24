@@ -1,4 +1,9 @@
 {
+  "common": {
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "back": "Volver"
+  },
   "navbar": {
     "appTitle": "Cartera crypto",
     "toggleSidebar": "Alternar menú lateral",
@@ -45,6 +50,9 @@
       "copy": "Copiar dirección",
       "copied": "Dirección copiada al portapapeles"
     },
+    "send": {
+      "tooltip": "Enviar BTC"
+    },
     "transactions": {
       "title": "Transacciones",
       "from": "Desde",
@@ -61,6 +69,64 @@
       "noData": "Sin transacciones aún",
       "noDataDescription": "Tu cartera está conectada pero aún no hay transacciones para mostrar.",
       "enterMnemonic": "Ingresar frase mnemónica"
+    }
+  },
+  "send": {
+    "title": "Enviar Bitcoin",
+    "loadingFees": "Cargando estimación de comisiones...",
+    "spendableBalance": "Saldo disponible",
+    "address": "Dirección del destinatario",
+    "amount": "Cantidad",
+    "max": "MÁX",
+    "feeSpeed": "Velocidad de transacción",
+    "customFeeRate": "Tarifa personalizada",
+    "estimatedFee": "Comisión estimada",
+    "total": "Total (Cantidad + Comisión)",
+    "feeWarning": "La comisión es más del 10% de la cantidad",
+    "continue": "Continuar",
+    "fee": {
+      "fastest": "Más rápido",
+      "normal": "Normal",
+      "slow": "Lento",
+      "economy": "Económico",
+      "custom": "Personalizado"
+    },
+    "error": {
+      "addressRequired": "Por favor ingresa una dirección de destino",
+      "amountRequired": "Por favor ingresa una cantidad",
+      "amountTooSmall": "La cantidad es muy pequeña (mínimo 546 satoshis)",
+      "invalidaddress": "Dirección de Bitcoin inválida",
+      "insufficientfunds": "Fondos insuficientes",
+      "amounttoosmall": "La cantidad está por debajo del límite de polvo",
+      "amounttoobig": "La cantidad excede el saldo disponible",
+      "cannotCreateTransaction": "No se pudo crear la transacción"
+    },
+    "confirm": {
+      "title": "Confirmar Transacción",
+      "recipient": "Destinatario",
+      "amount": "Cantidad",
+      "fee": "Comisión de red",
+      "ofAmount": "de la cantidad",
+      "total": "Total",
+      "inputs": "entradas",
+      "outputs": "salidas",
+      "inputsTitle": "Gastando desde",
+      "outputsTitle": "Enviando a",
+      "change": "Cambio",
+      "dustNotice": "{{amount}} BTC de polvo añadido a la comisión",
+      "irreversible": "Esta transacción no se puede revertir una vez enviada",
+      "sendNow": "Enviar Ahora"
+    },
+    "broadcasting": {
+      "title": "Transmitiendo Transacción",
+      "message": "Transmitiendo tu transacción a la red..."
+    },
+    "result": {
+      "successTitle": "Transacción Enviada",
+      "errorTitle": "Transacción Fallida",
+      "success": "Tu transacción ha sido transmitida a la red",
+      "error": "Error al transmitir la transacción",
+      "txHash": "ID de Transacción"
     }
   },
   "addressDetail": {

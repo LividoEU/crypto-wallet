@@ -1,0 +1,316 @@
+<h2 mat-dialog-title>
+  @switch (step()) {
+    @case ('input') {
+      {{ 'send.title' | translate }}
+    }
+    @case ('confirm') {
+      {{ 'send.confirm.title' | translate }}
+    }
+    @case ('broadcasting') {
+      {{ 'send.broadcasting.title' | translate }}
+    }
+    @case ('result') {
+      @if (broadcastResult()?.success) {
+        {{ 'send.result.successTitle' | translate }}
+      } @else {
+        {{ 'send.result.errorTitle' | translate }}
+      }
+    }
+  }
+</h2>
+
+<mat-dialog-content>
+  @switch (step()) {
+    <!-- INPUT STEP -->
+    @case ('input') {
+      @if (isLoading()) {
+        <div class="loading-container">
+          <mat-spinner diameter="32"></mat-spinner>
+          <span>{{ 'send.loadingFees' | translate }}</span>
+        </div>
+      } @else {
+        <form [formGroup]="sendForm" class="send-form">
+          <!-- Spendable Balance -->
+          <div class="balance-info">
+            <span class="balance-label">{{ 'send.spendableBalance' | translate }}:</span>
+            <span class="balance-value">{{ spendableBalanceBtc() | number : '1.8-8' }} BTC</span>
+          </div>
+
+          <!-- Address Input -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'send.address' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="address"
+              placeholder="bc1q..."
+              autocomplete="off"
+            />
+            <mat-icon matSuffix>account_balance_wallet</mat-icon>
+            @if (sendForm.get('address')?.hasError('required') && sendForm.get('address')?.touched) {
+              <mat-error>{{ 'send.error.addressRequired' | translate }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Amount Input -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'send.amount' | translate }} (BTC)</mat-label>
+            <input
+              matInput
+              formControlName="amountBtc"
+              type="number"
+              step="0.00000001"
+              min="0.00000546"
+              placeholder="0.00000000"
+            />
+            <button
+              mat-button
+              matSuffix
+              type="button"
+              (click)="setMaxAmount()"
+              class="max-button"
+            >
+              {{ 'send.max' | translate }}
+            </button>
+            @if (sendForm.get('amountBtc')?.hasError('required') && sendForm.get('amountBtc')?.touched) {
+              <mat-error>{{ 'send.error.amountRequired' | translate }}</mat-error>
+            }
+            @if (sendForm.get('amountBtc')?.hasError('min')) {
+              <mat-error>{{ 'send.error.amountTooSmall' | translate }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Amount in EUR -->
+          @if (amountEur(); as eur) {
+            <div class="amount-eur">
+              ≈ {{ eur | number : '1.2-2' : 'es' }} EUR
+            </div>
+          }
+
+          <!-- Fee Selection -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'send.feeSpeed' | translate }}</mat-label>
+            <mat-select formControlName="feePriority">
+              @for (option of feeOptions(); track option.priority) {
+                <mat-option [value]="option.priority">
+                  {{ option.label }} ({{ option.rate }} sat/vB) - {{ option.description }}
+                </mat-option>
+              }
+              <mat-option value="custom">{{ 'send.fee.custom' | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Custom Fee Rate -->
+          @if (sendForm.get('feePriority')?.value === 'custom') {
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'send.customFeeRate' | translate }} (sat/vB)</mat-label>
+              <input
+                matInput
+                formControlName="customFeeRate"
+                type="number"
+                min="1"
+                step="1"
+              />
+            </mat-form-field>
+          }
+
+          <!-- Estimated Fee & Total -->
+          @if (estimatedFeeBtc(); as feeBtc) {
+            <div class="fee-estimate" [class.warning]="isFeeWarning()">
+              <div class="fee-row">
+                <span class="fee-label">{{ 'send.estimatedFee' | translate }}:</span>
+                <span class="fee-value">{{ feeBtc | number : '1.8-8' }} BTC</span>
+              </div>
+              @if (satoshisToEur(estimatedFee()!); as feeEur) {
+                <div class="fee-eur">({{ feeEur | number : '1.2-2' : 'es' }} EUR)</div>
+              }
+              @if (isFeeWarning()) {
+                <div class="fee-warning">
+                  <mat-icon>warning</mat-icon>
+                  {{ 'send.feeWarning' | translate }}
+                </div>
+              }
+            </div>
+
+            <!-- Total (Amount + Fee) -->
+            @if (estimatedTotalBtc(); as totalBtc) {
+              <div class="total-estimate">
+                <div class="total-row">
+                  <span class="total-label">{{ 'send.total' | translate }}:</span>
+                  <span class="total-value">{{ totalBtc | number : '1.8-8' }} BTC</span>
+                </div>
+                @if (satoshisToEur(estimatedTotal()!); as totalEur) {
+                  <div class="total-eur">({{ totalEur | number : '1.2-2' : 'es' }} EUR)</div>
+                }
+              </div>
+            }
+          }
+
+          <!-- Error Message -->
+          @if (errorMessage(); as error) {
+            <div class="error-message">
+              <mat-icon>error</mat-icon>
+              {{ error }}
+            </div>
+          }
+        </form>
+      }
+    }
+
+    <!-- CONFIRM STEP -->
+    @case ('confirm') {
+      @if (preview(); as tx) {
+        <div class="confirm-details">
+          <div class="confirm-section">
+            <h4>{{ 'send.confirm.recipient' | translate }}</h4>
+            <p class="address">{{ tx.targetAddress }}</p>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="confirm-row">
+            <span class="label">{{ 'send.confirm.amount' | translate }}</span>
+            <div class="value-group">
+              <span class="value">{{ tx.amountBtc | number : '1.8-8' }} BTC</span>
+              @if (satoshisToEur(tx.amountSatoshis); as eur) {
+                <span class="sub-value">{{ eur | number : '1.2-2' : 'es' }} EUR</span>
+              }
+            </div>
+          </div>
+
+          <div class="confirm-row">
+            <span class="label">{{ 'send.confirm.fee' | translate }}</span>
+            <div class="value-group">
+              <span class="value">{{ tx.feeBtc | number : '1.8-8' }} BTC</span>
+              @if (satoshisToEur(tx.feeSatoshis); as eur) {
+                <span class="sub-value">{{ eur | number : '1.2-2' : 'es' }} EUR</span>
+              }
+              <span class="sub-value">({{ tx.feePercent | number : '1.2-2' }}% {{ 'send.confirm.ofAmount' | translate }})</span>
+            </div>
+          </div>
+
+          @if (tx.dustAddedToFee > 0) {
+            <div class="dust-notice">
+              <mat-icon>info</mat-icon>
+              {{ 'send.confirm.dustNotice' | translate : { amount: satoshisToBtc(tx.dustAddedToFee) | number : '1.8-8' } }}
+            </div>
+          }
+
+          <mat-divider></mat-divider>
+
+          <div class="confirm-row total">
+            <span class="label">{{ 'send.confirm.total' | translate }}</span>
+            <div class="value-group">
+              <span class="value">{{ tx.totalBtc | number : '1.8-8' }} BTC</span>
+              @if (satoshisToEur(tx.totalSatoshis); as eur) {
+                <span class="sub-value">{{ eur | number : '1.2-2' : 'es' }} EUR</span>
+              }
+            </div>
+          </div>
+
+          <div class="confirm-details-small">
+            <span>{{ tx.inputCount }} {{ 'send.confirm.inputs' | translate }} → {{ tx.outputCount }} {{ 'send.confirm.outputs' | translate }}</span>
+            <span>{{ tx.estimatedSize }} vB @ {{ tx.feeRate }} sat/vB</span>
+          </div>
+
+          <!-- Inputs/Outputs Details -->
+          <div class="io-details">
+            <div class="io-section">
+              <h4 class="io-title">{{ 'send.confirm.inputsTitle' | translate }}</h4>
+              <ul class="io-list">
+                @for (input of tx.inputs; track $index) {
+                  <li class="io-item">
+                    <span class="io-address">{{ input.address }}</span>
+                    <span class="io-value">{{ satoshisToBtc(input.valueSatoshis) | number : '1.8-8' }} BTC</span>
+                  </li>
+                }
+              </ul>
+            </div>
+            <div class="io-arrow">
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+            <div class="io-section">
+              <h4 class="io-title">{{ 'send.confirm.outputsTitle' | translate }}</h4>
+              <ul class="io-list">
+                @for (output of tx.outputs; track $index) {
+                  <li class="io-item" [class.is-change]="output.isChange">
+                    <div class="io-address-row">
+                      <span class="io-address">{{ output.address }}</span>
+                      @if (output.isChange) {
+                        <span class="io-badge">{{ 'send.confirm.change' | translate }}</span>
+                      }
+                    </div>
+                    <span class="io-value">{{ satoshisToBtc(output.valueSatoshis) | number : '1.8-8' }} BTC</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <mat-icon>warning</mat-icon>
+            <span>{{ 'send.confirm.irreversible' | translate }}</span>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- BROADCASTING STEP -->
+    @case ('broadcasting') {
+      <div class="broadcasting-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>{{ 'send.broadcasting.message' | translate }}</p>
+      </div>
+    }
+
+    <!-- RESULT STEP -->
+    @case ('result') {
+      @if (broadcastResult(); as result) {
+        <div class="result-container" [class.success]="result.success" [class.error]="!result.success">
+          @if (result.success) {
+            <mat-icon class="result-icon success">check_circle</mat-icon>
+            <h3>{{ 'send.result.success' | translate }}</h3>
+            <p class="tx-hash">
+              <span class="label">{{ 'send.result.txHash' | translate }}:</span>
+              <code>{{ result.txHash }}</code>
+            </p>
+          } @else {
+            <mat-icon class="result-icon error">error</mat-icon>
+            <h3>{{ 'send.result.error' | translate }}</h3>
+            <p class="error-text">{{ result.error }}</p>
+          }
+        </div>
+      }
+    }
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  @switch (step()) {
+    @case ('input') {
+      <button mat-button (click)="close()">{{ 'common.cancel' | translate }}</button>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="sendForm.invalid || isLoading()"
+        (click)="validateAndPreview()"
+      >
+        {{ 'send.continue' | translate }}
+      </button>
+    }
+    @case ('confirm') {
+      <button mat-button (click)="goBack()">{{ 'common.back' | translate }}</button>
+      <button mat-flat-button color="warn" (click)="confirmAndSend()">
+        <mat-icon>send</mat-icon>
+        {{ 'send.confirm.sendNow' | translate }}
+      </button>
+    }
+    @case ('broadcasting') {
+      <!-- No buttons during broadcast -->
+    }
+    @case ('result') {
+      <button mat-flat-button color="primary" (click)="close()">
+        {{ 'common.close' | translate }}
+      </button>
+    }
+  }
+</mat-dialog-actions>

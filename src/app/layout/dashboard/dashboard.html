@@ -25,6 +25,15 @@
       >
         <mat-icon>qr_code_2</mat-icon>
       </button>
+      <button
+        mat-icon-button
+        (click)="openSendDialog()"
+        [matTooltip]="'dashboard.send.tooltip' | translate"
+        class="send-button"
+        aria-label="Send BTC"
+      >
+        <mat-icon>send</mat-icon>
+      </button>
       <mat-menu #receiveMenu="matMenu" class="receive-menu">
         <div class="receive-content" (click)="$event.stopPropagation()">
           @if (receiveAddress(); as address) {
@@ -75,7 +84,7 @@
       <p class="empty-description">{{ 'dashboard.empty.noDataDescription' | translate }}</p>
     </div>
     } @else {
-    <mat-accordion class="transactions-list">
+    <mat-accordion class="transactions-list" multi>
       @for (tx of transactions(); track tx.hash) {
       <mat-expansion-panel class="transaction-panel">
         <mat-expansion-panel-header>
