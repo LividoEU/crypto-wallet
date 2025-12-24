@@ -81,6 +81,11 @@
 .receive-button {
   background-color: var(--mat-sys-primary-container);
   color: var(--mat-sys-on-primary-container);
+
+  mat-icon {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .receive-content {
@@ -90,6 +95,11 @@
   padding: 16px;
   gap: 16px;
   min-width: 232px;
+}
+
+.send-button {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
 }
 
 .qr-code {
